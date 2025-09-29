@@ -178,3 +178,27 @@ function validateFeedback(form) {
 
   return isValid;
 }
+
+function checkUsernameAvailability(uname) {
+  if (uname.trim() === "") {
+    document.getElementById("regNameErr").innerHTML = "Username required";
+    return;
+  }
+
+  let xhr = new XMLHttpRequest();
+  xhr.open("GET", "/bsms/controller/checkUsername.php?uname=" + encodeURIComponent(uname), true);
+
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      if (xhr.responseText === "taken") {
+        document.getElementById("regNameErr").style.color = "red";
+        document.getElementById("regNameErr").innerHTML = "Username already exists";
+      } else if (xhr.responseText === "available") {
+        document.getElementById("regNameErr").style.color = "green";
+        document.getElementById("regNameErr").innerHTML = "Username available";
+      }
+    }
+  };
+
+  xhr.send();
+}
